@@ -6,11 +6,30 @@ import { AppContext } from "./AppProvider";
 function Home() {
   let context = useContext(AppContext);
 
+  const [size, setSize] = useState(window.innerWidth);
+
+  let updateSize = () => {
+    setSize(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  });
+
   useEffect(() => {
     context?.setIsSignIn(false);
   }, []);
 
-  console.log(context?.isSignIn);
+  useEffect(() => {
+    let prevPage: HTMLLIElement | null = document.querySelector(
+      `#${context?.currentPage}`
+    );
+    prevPage?.classList.remove("orange");
+    let currentPage = document.querySelector("#home");
+    currentPage?.classList.add("orange");
+    context?.setCurrentPage("home");
+  });
 
   return (
     <div className="homepage">
@@ -47,8 +66,9 @@ function Home() {
               id="restaurant"
               placeholder="Find Restaurant"
             />
-            <button type="submit">search</button>
+            {size >= 400 && <button type="submit">search</button>}
           </div>
+          {size < 400 && <button className="search-button">Search</button>}
         </div>
 
         <div className="header-add-ons">

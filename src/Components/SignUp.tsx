@@ -1,6 +1,7 @@
 import React from "react";
-import { useContext, useEffect, useState, ChangeEvent } from "react";
+import { useContext, useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { AppContext } from "./AppProvider";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 function SignUp() {
   const context = useContext(AppContext);
@@ -10,12 +11,55 @@ function SignUp() {
   }, []);
 
   const [isLogin, setIsLogin] = useState(true);
-  const [firstname, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailErrorMessage, setEmailErrorMessage] = useState("");
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (isLogin) {
+      axios
+        .post("https://foodcate-api.onrender.com/api/users/login", {
+          email,
+          password,
+        })
+        .then((response) => {
+          let respPara: HTMLParagraphElement | null =
+            document.querySelector("#response-message");
+          respPara!.className = "green";
+          setResponseMessage("Successfully logged in.");
+        })
+        .catch((error) => {
+          setResponseMessage("invalid email or password");
+          let respPara: HTMLParagraphElement | null =
+            document.querySelector("#response-message");
+          respPara!.className = "red";
+        });
+    } else {
+      axios
+        .post("https://foodcate-api.onrender.com/api/users/register", {
+          name: `${firstName} ${lastName}`,
+          email,
+          password,
+        })
+        .then((response: AxiosResponse) => {
+          let respPara: HTMLParagraphElement | null =
+            document.querySelector("#response-message");
+          respPara!.className = "green";
+          setResponseMessage("Successfully registered.");
+        })
+        .catch((error: AxiosError) => {
+          setResponseMessage("Invalid email or password");
+          let respPara: HTMLParagraphElement | null =
+            document.querySelector("#response-message");
+          respPara!.className = "red";
+        });
+    }
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "fname") {
@@ -42,7 +86,6 @@ function SignUp() {
       } else {
         setEmailErrorMessage("Please enter a valid email");
       }
-      console.log(email);
     }
   };
 
@@ -50,7 +93,7 @@ function SignUp() {
     <div>
       <div className="form-container">
         <p className="orange">FOODCATE</p>
-        <form className="sign-in-container">
+        <form className="sign-in-container" onSubmit={handleSubmit}>
           {!isLogin && (
             <>
               <label htmlFor="fname">First Name</label>
@@ -58,6 +101,7 @@ function SignUp() {
                 type="text"
                 name="fname"
                 id="fname"
+                value={firstName}
                 onChange={handleChange}
               />
 
@@ -66,6 +110,7 @@ function SignUp() {
                 type="text"
                 name="lname"
                 id="lname"
+                value={lastName}
                 onChange={handleChange}
               />
             </>
@@ -76,6 +121,7 @@ function SignUp() {
             type="email"
             name="email"
             id="email"
+            value={email}
             onChange={handleChange}
             style={{
               border: `2px solid ${emailErrorMessage ? "red" : "transparent"}`,
@@ -90,6 +136,7 @@ function SignUp() {
             type="password"
             name="password"
             id="password"
+            value={password}
             onChange={handleChange}
             style={{
               border: `2px solid ${
@@ -101,6 +148,11 @@ function SignUp() {
             <p className="pword-error red">{passwordErrorMessage}</p>
           )}
 
+          {
+            /* responseMessage &&  */ <p id="response-message" className="">
+              {responseMessage}
+            </p>
+          }
           <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
 
           {isLogin && (

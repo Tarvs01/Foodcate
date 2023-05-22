@@ -5,6 +5,8 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import SignUp from "./SignUp";
 import Staff from "./Staff";
+import Offers from "./Offers";
+import Food from "./Food";
 
 function Router() {
   return (
@@ -14,6 +16,8 @@ function Router() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/staff" element={<Staff />} />
+        <Route path="/offers" element={<Offers />} />
+        <Route path="/food" element={<Food />} />
       </Routes>
       <Footer />
     </div>

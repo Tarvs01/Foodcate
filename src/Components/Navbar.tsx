@@ -52,7 +52,9 @@ function Navbar() {
     <nav>
       {!context?.isSignIn && (
         <div className="header-container">
-          <div className="logo orange">FOODCATE</div>
+          <Link to="/">
+            <div className="logo orange">FOODCATE</div>
+          </Link>
           <div className="nav-menu">
             {size <= 730 && (
               <div className="menu-icon-cont">
@@ -92,29 +94,34 @@ function Navbar() {
                   )}
                 </div>
                 {smallMenuOpen && (
-                  <ul className="small-menu">
-                    <li>
-                      <Link to={"/"}>Home</Link>
-                    </li>
-                    <li>Food</li>
-                    <li>Restaurant</li>
-                    <li>Offers</li>
-                    <li>
-                      <Link to={"/staff"}>Staff</Link>
-                    </li>
-                  </ul>
+                  <div className="small-menu-container">
+                    <div className="blur-container"></div>
+                    <ul className="small-menu">
+                      <li>
+                        <Link to={"/food"}>Food</Link>
+                      </li>
+                      <li>Restaurant</li>
+                      <li>
+                        <Link to={"/offers"}>Offers</Link>
+                      </li>
+                      <li>
+                        <Link to={"/staff"}>Staff</Link>
+                      </li>
+                    </ul>
+                  </div>
                 )}
               </div>
             )}
             {size > 730 && (
-              <ul>
-                <li className="orange">
-                  <Link to={"/"}>Home</Link>
+              <ul className="large-menu">
+                <li id="food">
+                  <Link to={"/food"}>Food</Link>
                 </li>
-                <li>Food</li>
-                <li>Restaurant</li>
-                <li>Offers</li>
-                <li>
+                <li id="rest">Restaurant</li>
+                <li id="offers">
+                  <Link to={"/offers"}>Offers</Link>
+                </li>
+                <li id="staff">
                   <Link to={"/staff"}>Staff</Link>
                 </li>
               </ul>

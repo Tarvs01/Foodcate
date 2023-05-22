@@ -1,6 +1,24 @@
 import React from "react";
+import { useContext, useEffect } from "react";
+import { AppContext } from "./AppProvider";
 
 function Staff() {
+  let context = useContext(AppContext);
+
+  useEffect(() => {
+    context?.setIsSignIn(false);
+  }, []);
+
+  useEffect(() => {
+    let prevPage: HTMLLIElement | null = document.querySelector(
+      `#${context?.currentPage}`
+    );
+    prevPage?.classList.remove("orange");
+    let currentPage = document.querySelector("#staff");
+    currentPage?.classList.add("orange");
+    context?.setCurrentPage("staff");
+  });
+
   return (
     <div className="staff-container">
       <h1>Meet our members of staff</h1>
@@ -74,7 +92,7 @@ function Staff() {
       </div>
 
       <div className="staff-cont">
-        <img src="../images/pubg.jpg" alt="Muyiwa" />
+        <img src="../images/pubg.jpg" alt="Shadrach" />
         <div className="about-staff">
           <h1>Shadrach</h1>
           <p>
@@ -139,7 +157,7 @@ function Staff() {
       </div>
 
       <div className="staff-cont">
-        <img src="../images/terver.jpg" alt="Muyiwa" />
+        <img src="../images/terver.jpg" alt="Tarvs" />
         <div className="about-staff">
           <h1>Tarvs</h1>
           <p>
