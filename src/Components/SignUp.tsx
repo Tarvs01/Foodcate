@@ -53,6 +53,7 @@ function SignUp() {
             document.querySelector("#response-message");
           respPara!.className = "green";
           setResponseMessage("Successfully registered.");
+          context?.setIsLoggedIn(true);
         })
         .catch((error: AxiosError) => {
           setResponseMessage("Invalid email or password");
