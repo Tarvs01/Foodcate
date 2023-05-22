@@ -2,6 +2,7 @@ import React from "react";
 import { useContext, useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { AppContext } from "./AppProvider";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { Navigate } from "react-router-dom";
 
 function SignUp() {
   const context = useContext(AppContext);
@@ -32,6 +33,7 @@ function SignUp() {
             document.querySelector("#response-message");
           respPara!.className = "green";
           setResponseMessage("Successfully logged in.");
+          context?.setIsLoggedIn(true);
         })
         .catch((error) => {
           setResponseMessage("invalid email or password");
@@ -91,6 +93,7 @@ function SignUp() {
 
   return (
     <div>
+      {context?.isLoggedIn && <Navigate to="/" />}
       <div className="form-container">
         <p className="orange">FOODCATE</p>
         <form className="sign-in-container" onSubmit={handleSubmit}>
