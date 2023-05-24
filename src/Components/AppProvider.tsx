@@ -1,29 +1,54 @@
 import React from "react";
 import { createContext } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { ContextItems, UserProfile, ResponseMessage } from "./types";
 
-interface UserProfile {
-  name: string;
-}
-
-interface contextItems {
-  isSignIn: boolean;
-  setIsSignIn: React.Dispatch<React.SetStateAction<boolean>>;
-  currentPage: string;
-  setCurrentPage: React.Dispatch<React.SetStateAction<string>>;
-  isLoggedIn: boolean;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  userProfile: UserProfile;
-  setUserProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
-}
-
-const AppContext = createContext<contextItems | null>(null);
+const AppContext = createContext<ContextItems | null>(null);
 
 function AppProvider({ children }: any) {
   const [isSignIn, setIsSignIn] = useState(false);
   const [currentPage, setCurrentPage] = useState("home");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [userProfile, setUserProfile] = useState<UserProfile>({ name: "User" });
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    _id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    image: "",
+  });
+
+  function setUserData(data: ResponseMessage) {
+    let user: UserProfile = {
+      _id: data._id,
+      firstName: data.name.split(" ")[0] || "----",
+      lastName: data.name.split(" ")[1] || "----",
+      email: data.email,
+      image: data.image,
+    };
+    if (localStorage) {
+      localStorage.setItem("foodcate", user._id);
+    }
+    setUserProfile(user);
+  }
+
+  function getAndSetUserProfile() {
+    let id: string | null = localStorage.getItem("foodcate");
+    if (id !== null) {
+      axios
+        .get("https://foodcate-api.onrender.com/api/users/" + id)
+        .then((response) => {
+          setUserData(response.data.message);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }
+
+  /* useEffect(() => {
+    getAndSetUserProfile();
+  }, []); */
 
   return (
     <AppContext.Provider
@@ -36,6 +61,7 @@ function AppProvider({ children }: any) {
         setIsLoggedIn,
         userProfile,
         setUserProfile,
+        setUserData,
       }}
     >
       {children}

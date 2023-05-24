@@ -3,6 +3,8 @@ import { useContext, useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { AppContext } from "./AppProvider";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { Navigate } from "react-router-dom";
+import { ResponseMessage } from "./types";
+import { Link } from "react-router-dom";
 
 function SignUp() {
   const context = useContext(AppContext);
@@ -34,6 +36,7 @@ function SignUp() {
           respPara!.className = "green";
           setResponseMessage("Successfully logged in.");
           context?.setIsLoggedIn(true);
+          context?.setUserData(response.data.message);
         })
         .catch((error) => {
           setResponseMessage("invalid email or password");
@@ -54,9 +57,10 @@ function SignUp() {
           respPara!.className = "green";
           setResponseMessage("Successfully registered.");
           context?.setIsLoggedIn(true);
+          context?.setUserData(response.data.message);
         })
         .catch((error: AxiosError) => {
-          setResponseMessage("Invalid email or password");
+          setResponseMessage(error.message);
           let respPara: HTMLParagraphElement | null =
             document.querySelector("#response-message");
           respPara!.className = "red";
@@ -96,7 +100,9 @@ function SignUp() {
     <div>
       {context?.isLoggedIn && <Navigate to="/" />}
       <div className="form-container">
-        <p className="orange">FOODCATE</p>
+        <Link to="/">
+          <p className="orange">FOODCATE</p>
+        </Link>
         <form className="sign-in-container" onSubmit={handleSubmit}>
           {!isLogin && (
             <>
